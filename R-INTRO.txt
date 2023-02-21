@@ -110,6 +110,9 @@ head(dataT, 2)
 tail(dataT, 2)
 
 
+
+
+
 z <- data.frame(a = 5, b = 10, c = pi)
 write.csv(z,file="data.csv")
 
@@ -123,4 +126,5 @@ dataY<- dataX[1:2,]
 dataY
 
 data <- data.frame(Name=character(), Age=numeric())
+data <- edit(data)
 data
