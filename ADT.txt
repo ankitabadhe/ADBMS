@@ -1,0 +1,121 @@
+1). Create abstract type name (fname, mname, lname) :
+SQL>   CREATE TYPE name AS object
+  2       (
+  3        fname varchar(30),
+  4        mname varchar(30),
+  5        lname varchar(30)
+  6       );
+  7     /
+Type created.
+
+2). Create type address (street, city, pin) :
+SQL>   CREATE TYPE address AS object
+  2       (
+  3         street varchar(30),
+  4         city varchar(30),
+  5         pin int
+  6         );
+  7      /
+Type created.
+
+3). Create table student (id, name, address) :
+SQL>  CREATE TABLE student
+  2         ( id int,
+  3            name_ty name,
+  4            address_ty address
+  5          );
+Table created.
+
+4). Insert 5 records :
+SQL>  INSERT INTO student
+  2         VALUES
+  3        (1,name('ankita','bharat','badhe'),address('siddarth colony road','mumbai','400017'));
+1 row created.
+SQL>  INSERT INTO student
+  2         VALUES
+  3         (2,name('abhi','baban','dasgude'),address('shikshak colony road','pune','412210'));
+1 row created.
+SQL> INSERT INTO student
+  2         VALUES
+  3         (3,name('arun','satish','kadam'),address('ram colony road','pune','412310'));
+1 row created.
+SQL>  INSERT INTO student
+  2         VALUES
+  3         (4,name('anshita','satish','kale'),address('sram colony road','kolkata','342110'));
+1 row created.
+SQL>  INSERT INTO student
+  2         VALUES
+  3         (5,name('radha','seh','sangha'),address('agar road','delhi','110048'));
+1 row created. 
+
+5). Select records from table :
+SQL> SELECT * FROM student;
+        ID
+----------
+NAME_TY(FNAME, MNAME, LNAME)
+--------------------------------------------------------------------------------
+ADDRESS_TY(STREET, CITY, PIN)
+--------------------------------------------------------------------------------
+         1
+NAME('ankita', 'bharat', 'badhe')
+ADDRESS('siddarth colony road', 'mumbai', 400017)
+         2
+NAME('abhi', 'baban', 'dasgude')
+ADDRESS('shikshak colony road', 'pune', 412210)
+        ID
+----------
+NAME_TY(FNAME, MNAME, LNAME)
+--------------------------------------------------------------------------------
+ADDRESS_TY(STREET, CITY, PIN)
+--------------------------------------------------------------------------------
+         3
+NAME('arun', 'satish', 'kadam')
+ADDRESS('ram colony road', 'pune', 412310)
+         4
+NAME('anshita', 'satish', 'kale')
+        ID
+----------
+NAME_TY(FNAME, MNAME, LNAME)
+--------------------------------------------------------------------------------
+ADDRESS_TY(STREET, CITY, PIN)
+--------------------------------------------------------------------------------
+ADDRESS('sram colony road', 'kolkata', 342110)
+         5
+NAME('radha', 'seh', 'sangha')
+ADDRESS('agar road', 'delhi', 110048)
+
+6). Describe student with depth1 :
+SQL>  DESC student;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ID                                                 NUMBER(38)
+ NAME_TY                                            NAME
+ ADDRESS_TY                                         ADDRESS
+
+7). Select city of student with id 4 :
+SQL>  SELECT s.address_ty.city FROM student s WHERE id=4;
+ADDRESS_TY.CITY
+------------------------------
+Kolkata
+
+8). Modify city of student with id =3 :
+SQL>  UPDATE student s
+  2            SET s.address_ty.city='mumbai'
+  3           WHERE s.id=3;
+1 row updated.
+SQL>  SELECT s.address_ty.city FROM student s WHERE id=3;
+ADDRESS_TY.CITY
+------------------------------
+Mumbai
+
+9). Select name of student with id=2 as "fname name lname" :
+SQL>  SELECT s.name_ty.fname||' '||s.name_ty.mname||' '||s.name_ty.lname FROM student s WHERE id=2;
+S.NAME_TY.FNAME||''||S.NAME_TY.MNAME||''||S.NAME_TY.LNAME
+--------------------------------------------------------------------------------
+abhi baban dasgude
+
+10). Alter address add country in address  :
+SQL>  ALTER TYPE address
+  2         ADD ATTRIBUTE(country varchar(30))
+  3         cascade;
+Type altered.

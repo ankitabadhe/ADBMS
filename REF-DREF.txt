@@ -1,0 +1,92 @@
+1). Create reference pet_animal (breed,name,birth_date) :
+SQL> create type pet_animalT as object
+  2     (
+  3     breed varchar2(20),
+  4     name varchar2(20),
+  5     birth_date DATE
+  6     )
+  7      NOT FINAL;
+  8    /
+Type created.
+
+2). Create table of type pet_animal
+     and Insert 3 records :
+SQL>  create table petT of pet_animalT;
+Table created.
+SQL>  insert into petT values('pug','dasar','1-april-2001');
+1 row created.
+
+SQL>  insert into petT values('lab','buzo','1-may-2002');
+1 row created.
+SQL>  insert into petT values('bulldog','enzo','10-june-2004');
+1 row created.
+
+3). Create table owner (owner_name, pet), pet will be of pet_animal_type :
+SQL>  create table ownerT
+  2     (
+  3     owner_name varchar2(20),
+  4     petT ref pet_animalT
+  5     );
+Table created.
+
+4). Insert 6 records refer per_animal for pet :
+SQL>  insert into ownerT(select 'aman',ref(p) from petT p where p.name like 'e%');
+1 row created.
+SQL>  insert into ownerT(select 'prasad',ref(p) from petT p where p.name like 'd%');
+1 row created.
+SQL> insert into ownerT(select 'dishank',ref(p) from petT p where p.name like 'b%');
+1 row created.
+SQL>  insert into ownerT(select 'ankita',ref(p)from petT p where p.name like 'e%');
+1 row created.
+SQL>  insert into ownerT(select 'sagar',ref(p) from petT p where p.name like 'd%');
+1 row created.
+SQL> insert into ownerT(select 'arohie',ref(p) from petT p where p.name like 'b%');
+1 row created.
+
+5). Select from owner :
+SQL>  select * from ownerT;
+OWNER_NAME
+--------------------
+PETT
+--------------------------------------------------------------------------------
+aman
+0000220208903E92F6EA284991B4F58D581D49D099F1F64D61B02441B4A157D07C63B11039
+prasad
+00002202089C8F9DE777F4411099C1433757B0E3AFF1F64D61B02441B4A157D07C63B11039
+dishank
+0000220208D8AF099E734844EA9671472156FE1FD7F1F64D61B02441B4A157D07C63B11039
+OWNER_NAME
+--------------------
+PETT
+--------------------------------------------------------------------------------
+ankita
+0000220208903E92F6EA284991B4F58D581D49D099F1F64D61B02441B4A157D07C63B11039
+sagar
+00002202089C8F9DE777F4411099C1433757B0E3AFF1F64D61B02441B4A157D07C63B11039
+arohie
+0000220208D8AF099E734844EA9671472156FE1FD7F1F64D61B02441B4A157D07C63B11039
+6 rows selected.
+
+6). Use deref to select the records :
+SQL> select deref(PETT), owner_name from ownerT;
+DEREF(PETT)(BREED, NAME, BIRTH_DATE)
+--------------------------------------------------------------------------------
+OWNER_NAME
+--------------------
+PET_ANIMALT('bulldog', 'enzo', '10-JUN-04')
+aman
+PET_ANIMALT('pug', 'dasar', '01-APR-01')
+prasad
+PET_ANIMALT('lab', 'buzo', '01-MAY-02')
+dishank
+DEREF(PETT)(BREED, NAME, BIRTH_DATE)
+--------------------------------------------------------------------------------
+OWNER_NAME
+--------------------
+PET_ANIMALT('bulldog', 'enzo', '10-JUN-04')
+ankita
+PET_ANIMALT('pug', 'dasar', '01-APR-01')
+sagar
+PET_ANIMALT('lab', 'buzo', '01-MAY-02')
+arohie
+6 rows selected.

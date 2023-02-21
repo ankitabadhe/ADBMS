@@ -1,0 +1,145 @@
+SQL> CREATE TABLE sales
+  2    ( 
+  3       sales_id   NUMBER(6), 
+  4  sales_name VARCHAR(30),
+  5  amount INT,
+  6   sales_date    DATE
+  7   )
+  8   PARTITION BY RANGE (sales_date)
+  9   ( PARTITION sales_q1_2006 VALUES LESS THAN (TO_DATE('01-APR-2006','dd-MON-yyyy'))
+ 10   , PARTITION sales_q2_2006 VALUES LESS THAN (TO_DATE('01-JUL-2006','dd-MON-yyyy'))
+ 11   , PARTITION sales_q3_2006 VALUES LESS THAN (TO_DATE('01-OCT-2006','dd-MON-yyyy')) 
+ 12  ,PARTITION sales_q4_2006 VALUES LESS THAN (TO_DATE('01-NOV-2006','dd-MON-yyyy'))
+ 13   );
+Table created.
+
+2). Select partition details fro user_tab_partitions :
+SQL> SELECT * FROM USER_TAB_PARTITIONS WHERE TABLE_NAME = 'sales';
+no rows selected
+
+3). Insert three records into the table :
+SQL> INSERT INTO sales  
+  2     VALUES (1,'avi',300,TO_DATE('18/02/2006', 'DD/MM/YYYY')); 
+1 row created.
+SQL> INSERT INTO sales  
+  2     VALUES (2,'abhi',600,TO_DATE('18/06/2006', 'DD/MM/YYYY')); 
+
+1 row created.
+SQL> INSERT INTO sales  
+  2     VALUES (3,'ankita',900,TO_DATE('18/09/2006', 'DD/MM/YYYY')); 
+1 row created.
+
+4). Select data from table :
+SQL> SELECT * FROM sales;
+  SALES_ID SALES_NAME                         AMOUNT SALES_DAT
+---------- ------------------------------ ---------- ---------
+         1 avi                                   300 18-FEB-06
+         2 abhi                                  600 18-JUN-06
+         3 ankita                                900 18-SEP-06
+
+5). Select data from a particular partition :
+SQL>  SELECT * FROM sales PARTITION (sales_q1_2006);
+  SALES_ID SALES_NAME                         AMOUNT SALES_DAT
+---------- ------------------------------ ---------- ---------
+         1 avi                                   300 18-FEB-06
+SQL>  SELECT * FROM sales PARTITION (sales_q2_2006);
+  SALES_ID SALES_NAME                         AMOUNT SALES_DAT
+---------- ------------------------------ ---------- ---------
+         2 abhi                                  600 18-JUN-06
+SQL>  SELECT * FROM sales PARTITION (sales_q3_2006);
+  SALES_ID SALES_NAME                         AMOUNT SALES_DAT
+---------- ------------------------------ ---------- ---------
+         3 ankita                                900 18-SEP-06
+SQL>  SELECT * FROM sales PARTITION (sales_q4_2006);
+no rows selected
+
+6). Merger last two partition :
+SQL> ALTER TABLE sales MERGE PARTITIONS sales_q3_2006, sales_q4_2006 INTO PARTITION sales_q5_2006
+Table altered.
+8). Drop partition :
+SQL> ALTER TABLE sales DROP PARTITION initial_partition;
+Table altered.
+
+B) List Partitioning :
+1. Create sales table (id, name, state, amount, date) create list partition on state :
+SQL>  CREATE TABLE sale_info
+  2       ( 
+  3       sale_id   NUMBER(6), 
+  4      sale_name VARCHAR(30),
+  5      state VARCHAR(30),
+  6      amount INT,
+  7       sale_date    DATE
+  8       )
+  9       PARTITION BY LIST(state)
+ 10      ( 
+ 11     PARTITION sales_q1 VALUES('Maharashtra','UP'),
+ 12     PARTITION sales_q2 VALUES('Bihar'),
+ 13     PARTITION sales_q3 VALUES('Ladakh','Gujrat')
+ 14      );
+Table created.
+
+2. Alter table add default partition :
+SQL> ALTER TABLE sale_info ADD PARTITION pdefault VALUES(DEFAULT);
+Table altered.
+
+3. Insert record :
+SQL>  INSERT INTO sale_info  
+  2         VALUES (1,'avi','Bihar',300,TO_DATE('18/02/2006', 'DD/MM/YYYY'));
+1 row created.
+SQL>  INSERT INTO sale_info  
+  2        VALUES (2,'abhi','Maharashtra',600,TO_DATE('18/06/2006', 'DD/MM/YYYY')); 
+1 row created.
+SQL>  INSERT INTO sale_info  
+  2         VALUES (3,'ankita','Ladakh',900,TO_DATE('18/09/2006', 'DD/MM/YYYY')); 
+1 row created.
+SQL> INSERT INTO sale_info  
+  2         VALUES (4,'sunita','Gujrat',100,TO_DATE('23/11/2006', 'DD/MM/YYYY')); 
+1 row created.
+SQL>  INSERT INTO sale_info  
+  2         VALUES (5,'sita','AP',500,TO_DATE('02/12/2006', 'DD/MM/YYYY'));
+1 row created.
+SQL>  INSERT INTO sale_info  
+  2         VALUES (6,'ram','UP',300,TO_DATE('08/12/2006', 'DD/MM/YYYY'));
+1 row created.
+SQL>  INSERT INTO sale_info  
+  2         VALUES (7,'ravi','MP',800,TO_DATE('09/12/2006', 'DD/MM/YYYY'));
+1 row created.
+SQL>  INSERT INTO sale_info  
+  2        VALUES (8,'saksham','UP',400,TO_DATE('19/06/2006', 'DD/MM/YYYY')); 
+1 row created.
+SQL>  INSERT INTO sale_info  
+  2        VALUES (9,'dishank','HP',100,TO_DATE('12/08/2006', 'DD/MM/YYYY'));
+1 row created.
+
+4. Split default partition :
+SQL> ALTER TABLE sale_info 
+  2  SPLIT PARTITION pdefault 
+  3     VALUES('AP','HP') 
+  4     INTO(PARTITION sales_q4,PARTITION pdefault);
+Table altered.
+
+5. Rename any one partition :
+SQL>  ALTER TABLE sale_info RENAME PARTITION sales_q2 TO second_partition;
+Table altered.
+
+6. Drop a partition :
+SQL>  ALTER TABLE sale_info DROP PARTITION second_partition;
+Table altered.
+
+SQL> CREATE TABLE supplier_info
+  2   ( 
+  3   id   NUMBER(6), 
+  4  name VARCHAR(30),
+  5  address VARCHAR(30)
+  6   )
+  7   PARTITION BY HASH(id)
+  8   ( 
+  9  PARTITION p1,
+ 10  PARTITION p2,
+ 11  PARTITION p3
+ 12   );
+Table created.
+
+2. Add a partition :
+SQL> ALTER TABLE supplier_info ADD PARTITION p4;
+Table altered.

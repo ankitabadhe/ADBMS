@@ -1,0 +1,182 @@
+1). Create students table (id, fname,lname, address, dob), make id as primary key :
+SQL>  CREATE TABLE students (  
+  2      id INT                           NOT NULL,  
+  3      fname VARCHAR (20) NOT NULL,  
+  4      lname VARCHAR (20) NOT NULL,  
+  5      address CHAR (25), 
+  6      dob DATE ,
+  7      PRIMARY KEY (id)  
+  8     ); 
+Table created.
+
+2). Create departments table (id, name) make departments id a primary key :
+SQL>  CREATE TABLE departments (  
+  2      id INT                           NOT NULL,  
+  3     name VARCHAR (20) NOT NULL,  
+  4      PRIMARY KEY (id)  
+  5      );  
+Table created.
+
+3). Create customers table (id, name,city), make id as primary key :
+SQL>  CREATE TABLE customers (  
+  2      id INT                           NOT NULL,  
+  3      name VARCHAR (20) NOT NULL,   
+  4      city CHAR (25), 
+  5      PRIMARY KEY (id)  
+  6      ); 
+Table created.
+
+4). Drop customers table :
+SQL>  DROP TABLE customers;
+Table dropped.
+
+5). Alter students table add departments id  and add constraints foreign key to departments id :
+SQL>  ALTER TABLE students 
+  2      ADD CONSTRAINT Fk_dpid FOREIGN KEY(id)
+  3     REFERENCES departments(id);  
+Table altered.
+
+6). Rename students table :
+SQL>  ALTER TABLE students
+  2     RENAME TO employees;
+Table altered.
+
+7). Insert 7 records into departments table :
+SQL>  INSERT INTO departments  
+  2      VALUES (1,'SCIENCE'); 
+1 row created.
+SQL>  INSERT INTO departments  
+  2      VALUES (2,'COMMERCE');  
+1 row created.
+SQL>  INSERT INTO departments  
+  2      VALUES (3,'ARTS');
+1 row created.
+SQL>  INSERT INTO departments  
+  2     VALUES (4,'FASHION');  
+1 row created.
+SQL>  INSERT INTO departments  
+  2      VALUES (5,'ARTS');  
+1 row created.
+SQL>  INSERT INTO departments  
+  2      VALUES (6,'COMPUTER'); 
+1 row created.
+SQL>  INSERT INTO departments  
+  2     VALUES (7,'BUSSINESS'); 
+1 row created.
+
+8). Insert data into employees table :
+SQL>  INSERT INTO employees  
+  2     VALUES (1,'ankita','badhe','pune',TO_DATE('12/01/1987', 'DD/MM/YYYY')); 
+1 row created.
+SQL>  INSERT INTO employees  
+  2      VALUES (2,'anish','rane','mumbai',TO_DATE('18/05/1977', 'DD/MM/YYYY')); 
+1 row created.
+SQL>  INSERT INTO employees  
+  2    VALUES (3,'raghav','juyal','bihar',TO_DATE('28/08/1977', 'DD/MM/YYYY'));
+1 row created.
+SQL>  INSERT INTO employees  
+  2     VALUES (4,'rani','shinde','pune',TO_DATE('28/08/2000', 'DD/MM/YYYY')); 
+1 row created.
+SQL>  INSERT INTO employees  
+  2    VALUES (5,'rutika','kavde','pune',TO_DATE('08/09/2000', 'DD/MM/YYYY')); 
+1 row created.
+SQL>  INSERT INTO employees  
+  2     VALUES (6,'raj','tare','kolkata',TO_DATE('09/09/2001', 'DD/MM/YYYY')); 
+1 row created.
+SQL> INSERT INTO employees  
+  2      VALUES (7,'girija','pare','delhi',TO_DATE('09/09/1998', 'DD/MM/YYYY')); 
+1 row created. 
+
+9). Select from employees table :
+SQL>  SELECT * FROM employees;
+        ID FNAME                LNAME                ADDRESS
+---------- -------------------- -------------------- -------------------------
+DOB
+---------
+         1 ankita               badhe                pune
+12-JAN-87
+
+         2 anish                rane                 mumbai
+18-MAY-77
+
+         3 raghav               juyal                bihar
+28-AUG-77
+        ID FNAME                LNAME                ADDRESS
+---------- -------------------- -------------------- -------------------------
+DOB
+---------
+         4 rani                 shinde               pune
+28-AUG-00
+         5 rutika               kavde                pune
+08-SEP-00
+         6 raj                  tare                 kolkata
+09-SEP-01
+        ID FNAME                LNAME                ADDRESS
+---------- -------------------- -------------------- -------------------------
+DOB
+---------
+         7 girija               pare                 delhi
+09-SEP-98
+7 rows selected.
+
+10). Select from employees and departments table by performing join operation :
+SQL>  SELECT employees.id, employees.fname, employees.lname , employees.address , employees.dob FROM
+  2  departments
+  3     INNER JOIN employees
+  4    ON departments.id = employees.id;
+        ID FNAME                LNAME                ADDRESS
+---------- -------------------- -------------------- -------------------------
+DOB
+---------
+         1 ankita               badhe                pune
+12-JAN-87
+
+         2 anish                rane                 mumbai
+18-MAY-77
+         3 rajat                tiwary               bihar
+28-AUG-77
+        ID FNAME                LNAME                ADDRESS
+---------- -------------------- -------------------- -------------------------
+DOB
+---------
+         4 rani                 shinde               pune
+28-AUG-00
+         6 raj                  tare                 kolkata
+09-SEP-01
+         7 girija               pare                 delhi
+09-SEP-98
+6 rows selected.
+
+11). Update employees detail with id=3 :
+SQL>  UPDATE employees  
+  2      SET  fname= 'rajat' , lname= 'tiwary'
+  3      WHERE id = '3'  
+  4      ;
+1 row updated.
+
+12). Delete record from employees table where id =5 :
+SQL>  DELETE FROM employees  
+  2      WHERE id = '5';  
+1 row deleted.
+
+13). Create table employee (id, name, city, salary) keep a check constraint salary>9000 :
+SQL>   CREATE TABLE employee (  
+  2      id INT                           NOT NULL,  
+  3      name VARCHAR (20) NOT NULL,   
+  4      city CHAR (25), 
+  5      salary INT,
+  6      PRIMARY KEY (id) ,
+  7      CONSTRAINT Check_salary CHECK(salary>9000) 
+  8      ); 
+
+Table created.
+
+14). Create table product (id, name, status) apply “order placed” as default constraints on status :
+SQL>  CREATE TABLE product (  
+  2      id INT                           NOT NULL,  
+  3      name VARCHAR (20) NOT NULL,   
+  4      status CHAR (25), 
+  5      order_placed VARCHAR(20) DEFAULT 'YES'
+  6      ); 
+Table created.
+

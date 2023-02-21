@@ -1,0 +1,241 @@
+1) perform rollup operation on department and major:
+SQL> CREATE TABLE student(id INTEGER, name VARCHAR(20), department VARCHAR(20),major VARCHAR(20), joininf_date DATE,marks INTEGER);
+Table created.
+SQL>  INSERT INTO student VALUES(1,'SHIVANI','MCA','ADBMS',TO_DATE('01/04/2020','DD/MM/YYYY'),76);
+1 row created.
+SQL>  INSERT INTO student VALUES(2,'PRANAV','BE IT','AJAVA',TO_DATE('13/11/2019','DD/MM/YYYY'),98);
+1 row created.
+SQL>  INSERT INTO student VALUES(3,'raghav','MCA','SPM',TO_DATE('27/09/2021','DD/MM/YYYY'),86);
+1 row created.
+SQL>  INSERT INTO student VALUES(4,'ravi','MCA','PENTAHO',TO_DATE('15/05/2020','DD/MM/YYYY'),80)
+1 row created.
+SQL>  INSERT INTO student VALUES(5,'mrunal','BCA','MFCS',TO_DATE('30/12/2019','DD/MM/YYYY'),68)
+1 row created.
+SQL>  INSERT INTO student VALUES(6,'sirisha','MCA','WTL',TO_DATE('02/10/2019','DD/MM/YYYY'),80);
+1 row created.
+SQL>  INSERT INTO student VALUES(7,'rani','BE IT','AJAVA',TO_DATE('27/01/2020','DD/MM/YYYY'),99);
+
+1 row created.
+SQL>  INSERT INTO student VALUES(8,'nilam','BCA','MFCS',TO_DATE('21/06/2020','DD/MM/YYYY'),70);
+1 row created.
+SQL>  SELECT * FROM student;
+        ID NAME                 DEPARTMENT           MAJOR
+---------- -------------------- -------------------- --------------------
+JOININF_D      MARKS
+--------- ----------
+         1 SHIVANI              MCA                  ADBMS
+01-APR-20         76
+
+         2 PRANAV               BE IT                AJAVA
+13-NOV-19         98
+
+         3 raghav               MCA                  SPM
+27-SEP-21         86
+
+
+        ID NAME                 DEPARTMENT           MAJOR
+---------- -------------------- -------------------- --------------------
+JOININF_D      MARKS
+--------- ----------
+         4 ravi                 MCA                  PENTAHO
+15-MAY-20         80
+
+         5 mrunal               BCA                  MFCS
+30-DEC-19         68
+
+         6 sirisha              MCA                  WTL
+02-OCT-19         80
+        ID NAME                 DEPARTMENT           MAJOR
+---------- -------------------- -------------------- --------------------
+JOININF_D      MARKS
+--------- ----------
+         7 rani                 BE IT                AJAVA
+27-JAN-20         99
+
+         8 nilam                BCA                  MFCS
+21-JUN-20         70
+8 rows selected.
+SQL>  SELECT department, major,COUNT(*),SUM(marks)
+  2    FROM student
+  3    GROUP BY ROLLUP(department,major);
+DEPARTMENT           MAJOR                  COUNT(*) SUM(MARKS)
+-------------------- -------------------- ---------- ----------
+BCA                  MFCS                          2        138
+BCA                                                2        138
+MCA                  SPM                           1         86
+MCA                  WTL                           1         80
+MCA                  ADBMS                         1         76
+MCA                  PENTAHO                       1         80
+MCA                                                4        322
+BE IT                AJAVA                         2        197
+BE IT                                              2        197
+                                                   8        657
+10 rows selected.
+
+
+2) perform cube operation on department and major :
+SQL>  SELECT department, major,COUNT(*),SUM(marks)
+  2     FROM student
+  3     GROUP BY CUBE(department,major);
+DEPARTMENT           MAJOR                  COUNT(*) SUM(MARKS)
+-------------------- -------------------- ---------- ----------
+                                                   8        657
+                     SPM                           1         86
+                     WTL                           1         80
+                     MFCS                          2        138
+                     ADBMS                         1         76
+                     AJAVA                         2        197
+                     PENTAHO                       1         80
+BCA                                                2        138
+BCA                  MFCS                          2        138
+MCA                                                4        322
+MCA                  SPM                           1         86
+
+DEPARTMENT           MAJOR                  COUNT(*) SUM(MARKS)
+-------------------- -------------------- ---------- ----------
+MCA                  WTL                           1         80
+MCA                  ADBMS                         1         76
+MCA                  PENTAHO                       1         80
+BE IT                                              2        197
+BE IT                AJAVA                         2        197
+
+16 rows selected.
+
+
+3) perform rank operation deparmentwise on marks :
+SQL>  SELECT id,name,department,major,marks ,
+  2      RANK() OVER(PARTITION BY department ORDER BY marks) AS RANK FROM student;
+
+        ID NAME                 DEPARTMENT           MAJOR
+---------- -------------------- -------------------- --------------------
+     MARKS       RANK
+---------- ----------
+         5 mrunal               BCA                  MFCS
+        68          1
+
+         8 nilam                BCA                  MFCS
+        70          2
+
+         2 PRANAV               BE IT                AJAVA
+        98          1
+
+
+        ID NAME                 DEPARTMENT           MAJOR
+---------- -------------------- -------------------- --------------------
+     MARKS       RANK
+---------- ----------
+         7 rani                 BE IT                AJAVA
+        99          2
+
+         1 SHIVANI              MCA                  ADBMS
+        76          1
+
+         6 sirisha              MCA                  WTL
+        80          2
+
+
+        ID NAME                 DEPARTMENT           MAJOR
+---------- -------------------- -------------------- --------------------
+     MARKS       RANK
+---------- ----------
+         4 ravi                 MCA                  PENTAHO
+        80          2
+
+         3 raghav               MCA                  SPM
+        86          4
+8 rows selected.
+
+4) perform Dense_rank operation deparmentwise on marks :
+SQL>  SELECT id,name,department,major,marks ,
+  2     DENSE_RANK() OVER(PARTITION BY department ORDER BY marks) AS RANK FROM student;
+
+        ID NAME                 DEPARTMENT           MAJOR
+---------- -------------------- -------------------- --------------------
+     MARKS       RANK
+---------- ----------
+         5 mrunal               BCA                  MFCS
+        68          1
+
+         8 nilam                BCA                  MFCS
+        70          2
+
+         2 PRANAV               BE IT                AJAVA
+        98          1
+
+
+        ID NAME                 DEPARTMENT           MAJOR
+---------- -------------------- -------------------- --------------------
+     MARKS       RANK
+---------- ----------
+         7 rani                 BE IT                AJAVA
+        99          2
+
+         1 SHIVANI              MCA                  ADBMS
+        76          1
+
+         6 sirisha              MCA                  WTL
+        80          2
+
+
+        ID NAME                 DEPARTMENT           MAJOR
+---------- -------------------- -------------------- --------------------
+     MARKS       RANK
+---------- ----------
+         4 ravi                 MCA                  PENTAHO
+        80          2
+
+         3 raghav               MCA                  SPM
+        86          3
+8 rows selected.
+
+
+5) perfrom lead operaton on joining date :
+SQL>  SELECT id,joininf_date,
+  2     LEAD(joininf_date,1) OVER(ORDER BY joininf_date) AS "NEXT"
+  3    FROM student;
+
+        ID JOININF_D NEXT
+---------- --------- ---------
+         6 02-OCT-19 13-NOV-19
+         2 13-NOV-19 30-DEC-19
+         5 30-DEC-19 27-JAN-20
+         7 27-JAN-20 01-APR-20
+         1 01-APR-20 15-MAY-20
+         4 15-MAY-20 21-JUN-20
+         8 21-JUN-20 27-SEP-21
+         3 27-SEP-21
+8 rows selected.
+
+6) perform lag operation on joining date :
+SQL>  SELECT id,joininf_date,
+  2    LAG(joininf_date,1) OVER(ORDER BY joininf_date) AS "PREVIOUS"
+  3     FROM student;
+        ID JOININF_D PREVIOUS
+---------- --------- ---------
+         6 02-OCT-19
+         2 13-NOV-19 02-OCT-19
+         5 30-DEC-19 13-NOV-19
+         7 27-JAN-20 30-DEC-19
+         1 01-APR-20 27-JAN-20
+         4 15-MAY-20 01-APR-20
+         8 21-JUN-20 15-MAY-20
+         3 27-SEP-21 21-JUN-20
+8 rows selected.
+
+7) perform first and last operation departmentwide on marks :
+SQL>  SELECT department,marks,
+  2      MAX(marks)KEEP(DENSE_RANK FIRST ORDER BY marks DESC)
+  3      OVER(PARTITION BY department)"MAX
+  4      " FROM student;
+DEPARTMENT                MARKS   MAX
+
+-------------------- ---------- ----------
+BCA                          68         70
+BCA                          70         70
+BE IT                        99         99
+BE IT                        98         99
+MCA                          80         86
+MCA                          86         86
+MCA                          76         86
+MCA                          80         86
+8 rows selected.
